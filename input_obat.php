@@ -3,7 +3,7 @@
   include_once 'koneksi/koneksi_lokal.php';
   include_once 'koneksi/koneksi_pusat.php';
   include_once 'koneksi/koneksi_resepsionis.php';
-  include_once 'koneksi/koneksi_apoteker.php';
+  include_once 'koneksi/koneksi_dokter.php';
 
   // timezone
   date_default_timezone_set('Asia/Jakarta');

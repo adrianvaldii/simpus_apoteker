@@ -8,13 +8,7 @@
     <li><a href="#">TRANSAKSI</a>
       <ul>
         <li><a href="input_obat.php"><span class="glyphicon glyphicon-th-large"></span> Input Obat</a></li>
-        <li><a href="#"><span class="glyphicon glyphicon-th-large"></span> Rekam Medis</a></li>
-      </ul>
-    </li>
-    <li><a href="#">LAPORAN</a>
-      <ul>
-        <li><a href="#"><span class="glyphicon glyphicon-th-large"></span> Rekam Medis</a></li>
-        <li><a href="#"><span class="glyphicon glyphicon-th-large"></span> Rekam Medis (Hari ini)</a></li>
+        <li><a href="beli_obat.php"><span class="glyphicon glyphicon-th-large"></span> Beli Obat</a></li>
       </ul>
     </li>
   </ul>
