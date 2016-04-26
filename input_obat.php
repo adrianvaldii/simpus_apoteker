@@ -1,9 +1,19 @@
-<?php
+<?php session_start();
   // error_reporting(0);
   include_once 'koneksi/koneksi_lokal.php';
   include_once 'koneksi/koneksi_pusat.php';
   include_once 'koneksi/koneksi_resepsionis.php';
-  include_once 'koneksi/koneksi_dokter.php';
+  include_once 'koneksi/koneksi_apoteker.php';
+
+  // timezone
+  date_default_timezone_set('Asia/Jakarta');
+
+  // session login
+  if(empty($_SESSION['user'])){
+    header("Location: index.php");
+
+    die("Redirecting to: index.php");
+  }
 
   $status_obat = "";
   $status_data_apoteker = "";
@@ -223,7 +233,6 @@
 
     <!-- css -->
     <?php include 'css.php'; ?>
-    <link href="assets\images\favicon.png" type="image/x-icon" rel="shortcut icon">
 
   </head>
   <body>
