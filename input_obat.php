@@ -384,8 +384,8 @@
   $(document).ready(function(){
     // autocomplete id_daftar
     $("#id_daftar").autocomplete({
-      source: "datapengobatan.php",
       minLength:2,
+      source: "datapengobatan.php",
       select:function(event, data){
         $('input[name=id_pasien]').val(data.item.id_pasien);
       }

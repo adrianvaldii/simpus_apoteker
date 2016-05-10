@@ -9,11 +9,13 @@
   // connect to database dokter
   include_once 'koneksi/koneksi_dokter.php';
 
+  // term
+  $term = trim(strip_tags(strtoupper($_GET['term'])));
   // sql
-  $sql_lokal = "select * from rekam_medis";
-  $sql_pusat = "select * from rekam_medis";
-  $sql_resepsionis = "select * from rekam_medis";
-  $sql_dokter = "select * from rekam_medis";
+  $sql_lokal = "SELECT * FROM rekam_medis WHERE id_daftar LIKE '".$term."%' AND ROWNUM < 8";
+  $sql_pusat = "SELECT * FROM rekam_medis WHERE id_daftar LIKE '".$term."%' AND ROWNUM < 8";
+  $sql_resepsionis = "SELECT * FROM rekam_medis WHERE id_daftar LIKE '".$term."%' AND ROWNUM < 8";
+  $sql_dokter = "SELECT * FROM rekam_medis WHERE id_daftar LIKE '".$term."%' AND ROWNUM < 8";
 
   // logika basis data terdistribusi id rekam_medis
   if ($status_lokal == "ON") {
