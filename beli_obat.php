@@ -27,8 +27,10 @@
     if ($number > 0) {
       if ($status_lokal == "ON" && $status_pusat == "ON") {
         for ($i=0; $i<$number; $i++) {
+          include 'generate_beli_obat.php';
            if (trim($_POST["name"][$i] != '')) {
-              $query_obat_lokal = oci_parse($conn_lokal, "INSERT INTO beli_obat (id_beli, tgl_beli, nama_pembeli, telp, id_obat, jumlah) VALUES (id_beli.nextval, to_date(:tgl_beli, 'YYYY-MM-DD'), :nama_pembeli, :telp, :id_obat, :jumlah)");
+              $query_obat_lokal = oci_parse($conn_lokal, "INSERT INTO beli_obat (id_beli, tgl_beli, nama_pembeli, telp, id_obat, jumlah) VALUES (:id_beli, to_date(:tgl_beli, 'YYYY-MM-DD'), :nama_pembeli, :telp, :id_obat, :jumlah)");
+              oci_bind_by_name($query_obat_lokal, ":id_beli", $id_beli);
               oci_bind_by_name($query_obat_lokal, ":tgl_beli", $tgl_beli);
               oci_bind_by_name($query_obat_lokal, ":nama_pembeli", $nama_pembeli);
               oci_bind_by_name($query_obat_lokal, ":telp", $telp);
@@ -38,7 +40,8 @@
               oci_execute($query_obat_lokal);
               oci_commit($conn_lokal);
 
-              $query_obat_pusat = oci_parse($conn_pusat, "INSERT INTO beli_obat (id_beli, tgl_beli, nama_pembeli, telp, id_obat, jumlah) VALUES (id_beli.nextval, to_date(:tgl_beli, 'YYYY-MM-DD'), :nama_pembeli, :telp, :id_obat, :jumlah)");
+              $query_obat_pusat = oci_parse($conn_pusat, "INSERT INTO beli_obat (id_beli, tgl_beli, nama_pembeli, telp, id_obat, jumlah) VALUES (:id_beli, to_date(:tgl_beli, 'YYYY-MM-DD'), :nama_pembeli, :telp, :id_obat, :jumlah)");
+              oci_bind_by_name($query_obat_pusat, ":id_beli", $id_beli);
               oci_bind_by_name($query_obat_pusat, ":tgl_beli", $tgl_beli);
               oci_bind_by_name($query_obat_pusat, ":nama_pembeli", $nama_pembeli);
               oci_bind_by_name($query_obat_pusat, ":telp", $telp);
@@ -53,8 +56,10 @@
         }
       } elseif ($status_lokal == "ON" && $status_pusat == "OFF") {
           for ($i=0; $i<$number; $i++) {
+            include 'generate_beli_obat.php';
              if (trim($_POST["name"][$i] != '')) {
-               $query_obat_lokal = oci_parse($conn_lokal, "INSERT INTO beli_obat (id_beli, tgl_beli, nama_pembeli, telp, id_obat, jumlah) VALUES (id_beli.nextval, to_date(:tgl_beli, 'YYYY-MM-DD'), :nama_pembeli, :telp, :id_obat, :jumlah)");
+               $query_obat_lokal = oci_parse($conn_lokal, "INSERT INTO beli_obat (id_beli, tgl_beli, nama_pembeli, telp, id_obat, jumlah) VALUES (:id_beli, to_date(:tgl_beli, 'YYYY-MM-DD'), :nama_pembeli, :telp, :id_obat, :jumlah)");
+               oci_bind_by_name($query_obat_lokal, ":id_beli", $id_beli);
                oci_bind_by_name($query_obat_lokal, ":tgl_beli", $tgl_beli);
                oci_bind_by_name($query_obat_lokal, ":nama_pembeli", $nama_pembeli);
                oci_bind_by_name($query_obat_lokal, ":telp", $telp);
@@ -69,8 +74,10 @@
           }
       } elseif ($status_lokal == "OFF" && $status_pusat == "ON") {
           for ($i=0; $i<$number; $i++) {
+            include 'generate_beli_obat.php';
              if (trim($_POST["name"][$i] != '')) {
-               $query_obat_pusat = oci_parse($conn_pusat, "INSERT INTO beli_obat (id_beli, tgl_beli, nama_pembeli, telp, id_obat, jumlah) VALUES (id_beli.nextval, to_date(:tgl_beli, 'YYYY-MM-DD'), :nama_pembeli, :telp, :id_obat, :jumlah)");
+               $query_obat_pusat = oci_parse($conn_pusat, "INSERT INTO beli_obat (id_beli, tgl_beli, nama_pembeli, telp, id_obat, jumlah) VALUES (:id_beli, to_date(:tgl_beli, 'YYYY-MM-DD'), :nama_pembeli, :telp, :id_obat, :jumlah)");
+               oci_bind_by_name($query_obat_pusat, ":id_beli", $id_beli);
                oci_bind_by_name($query_obat_pusat, ":tgl_beli", $tgl_beli);
                oci_bind_by_name($query_obat_pusat, ":nama_pembeli", $nama_pembeli);
                oci_bind_by_name($query_obat_pusat, ":telp", $telp);
