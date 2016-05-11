@@ -24,6 +24,8 @@
         <li><a href="#"><span class="glyphicon glyphicon-th-large"></span> Data Dinan Kesehatan</a></li>
         <li><a href="#"><span class="glyphicon glyphicon-th-large"></span> Jasa Medis</a></li> -->
         <li><a href="sinkron_rekam.php"><span class="glyphicon glyphicon-th-large"></span> Data Rekam Medis</a></li>
+        <li><a href="sinkron_obat_keluar.php"><span class="glyphicon glyphicon-th-large"></span> Data Obat Keluar</a></li>
+        <li><a href="sinkron_beli_obat.php"><span class="glyphicon glyphicon-th-large"></span> Pembelian Obat Luar</a></li>
       </ul>
     </li>
   </ul>
