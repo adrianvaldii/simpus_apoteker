@@ -2,8 +2,6 @@
   // error_reporting(0);
   include_once 'koneksi/koneksi_lokal.php';
   include_once 'koneksi/koneksi_pusat.php';
-  include_once 'koneksi/koneksi_resepsionis.php';
-  include_once 'koneksi/koneksi_dokter.php';
 
   // session login
   if(empty($_SESSION['user'])){
@@ -15,67 +13,35 @@
   $status = "";
   // dokter to pusat
   if (isset($_POST['submit_pusat'])) {
-    $query = "MERGE INTO rekam_medis a USING (SELECT * FROM rekam_medis@to_pusat) p ON (a.id_daftar = p.id_daftar)
-              WHEN MATCHED THEN UPDATE SET a.tgl_daftar = p.tgl_daftar, a.anamnesa = p.anamnesa, a.pemeriksaan = p.pemeriksaan, a.diagnosis = p.diagnosis, a.terapi = p.terapi, a.status = p.status, a.id_pasien = p.id_pasien, a.id_pelayanan = p.id_pelayanan, a.id_dokter = p.id_dokter, a.id_perawat = p.id_perawat, a.id_apoteker = p.id_apoteker, a.hasil_lab = p.hasil_lab
-              WHEN NOT MATCHED THEN INSERT (id_daftar, tgl_daftar, anamnesa, pemeriksaan, diagnosis, terapi, status, id_pasien, id_pelayanan, id_dokter, id_perawat, id_apoteker, hasil_lab) VALUES (p.id_daftar, p.tgl_daftar, p.anamnesa, p.pemeriksaan, p.diagnosis, p.terapi, p.status, p.id_pasien, p.id_pelayanan, p.id_dokter, p.id_perawat, p.id_apoteker, p.hasil_lab)";
+    $query = "MERGE INTO beli_obat a USING (SELECT * FROM beli_obat@to_pusat) p ON (a.id_beli = p.id_beli)
+              WHEN MATCHED THEN UPDATE SET a.tgl_beli = p.tgl_beli, a.id_obat = p.id_obat, a.jumlah = p.jumlah, a.nama_pembeli = p.nama_pembeli, a.telp = p.telp
+              WHEN NOT MATCHED THEN INSERT (id_beli, tgl_beli, id_obat, jumlah, nama_pembeli, telp) VALUES (p.id_beli, p.tgl_beli, p.id_obat, p.jumlah, p.nama_pembeli, p.telp)";
     $data_sinkron = oci_parse($conn_lokal, $query);
     $result = oci_execute($data_sinkron);
     oci_commit($conn_lokal);
 
     if ($result) {
-      $status = "Good Job! Data rekam medis berhasil disinkronisasi.";
+      $status = "Good Job! Data pembelian obat berhasil disinkronisasi.";
     } else {
-      $status = "Bad News! Data rekam medis gagal disinkronisasi.";
+      $status = "Bad News! Data pembelian obat gagal disinkronisasi.";
     }
     oci_close($conn_lokal);
   }
   // pusat to dokter
   if (isset($_POST['submit_apoteker'])) {
-    $query = "MERGE INTO rekam_medis p USING (SELECT * FROM rekam_medis@to_apoteker) a ON (p.id_daftar = a.id_daftar)
-              WHEN MATCHED THEN UPDATE SET p.tgl_daftar = a.tgl_daftar, p.anamnesa = a.anamnesa, p.pemeriksaan = a.pemeriksaan, p.diagnosis = a.diagnosis, p.terapi = a.terapi, p.status = a.status, p.id_pasien = a.id_pasien, p.id_pelayanan = a.id_pelayanan, p.id_dokter = a.id_dokter, p.id_perawat = a.id_perawat, p.id_apoteker = a.id_apoteker, p.hasil_lab = a.hasil_lab
-              WHEN NOT MATCHED THEN INSERT (id_daftar, tgl_daftar, anamnesa, pemeriksaan, diagnosis, terapi, status, id_pasien, id_pelayanan, id_dokter, id_perawat, id_apoteker, hasil_lab) VALUES (a.id_daftar, a.tgl_daftar, a.anamnesa, a.pemeriksaan, a.diagnosis, a.terapi, a.status, a.id_pasien, a.id_pelayanan, a.id_dokter, a.id_perawat, a.id_apoteker, a.hasil_lab)";
+    $query = "MERGE INTO beli_obat p USING (SELECT * FROM beli_obat@to_apoteker) a ON (p.id_beli = a.id_beli)
+              WHEN MATCHED THEN UPDATE SET p.tgl_beli = a.tgl_beli, p.id_obat = a.id_obat, p.jumlah = a.jumlah, p.nama_pembeli = a.nama_pembeli, p.telp = a.telp
+              WHEN NOT MATCHED THEN INSERT (id_beli, tgl_beli, id_obat, jumlah, nama_pembeli, telp) VALUES (a.id_beli, a.tgl_beli, a.id_obat, a.jumlah, a.nama_pembeli, a.telp)";
     $data_sinkron = oci_parse($conn_pusat, $query);
     $result = oci_execute($data_sinkron);
     oci_commit($conn_pusat);
 
     if ($result) {
-      $status = "Good Job! Data rekam medis berhasil disinkronisasi.";
+      $status = "Good Job! Data pembelian obat berhasil disinkronisasi.";
     } else {
-      $status = "Bad News! Data rekam medis gagal disinkronisasi.";
+      $status = "Bad News! Data pembelian obat gagal disinkronisasi.";
     }
     oci_close($conn_pusat);
-  }
-  // dokter to resepsionis
-  if (isset($_POST['submit_resepsionis'])) {
-    $query = "MERGE INTO rekam_medis a USING (SELECT * FROM rekam_medis@to_resepsionis) r ON (a.id_daftar = r.id_daftar)
-              WHEN MATCHED THEN UPDATE SET a.tgl_daftar = r.tgl_daftar, a.anamnesa = r.anamnesa, a.pemeriksaan = r.pemeriksaan, a.diagnosis = r.diagnosis, a.terapi = r.terapi, a.status = r.status, a.id_pasien = r.id_pasien, a.id_pelayanan = r.id_pelayanan, a.id_dokter = r.id_dokter, a.id_perawat = r.id_perawat, a.id_apoteker = r.id_apoteker, a.hasil_lab = r.hasil_lab
-              WHEN NOT MATCHED THEN INSERT (id_daftar, tgl_daftar, anamnesa, pemeriksaan, diagnosis, terapi, status, id_pasien, id_pelayanan, id_dokter, id_perawat, id_apoteker, hasil_lab) VALUES (r.id_daftar, r.tgl_daftar, r.anamnesa, r.pemeriksaan, r.diagnosis, r.terapi, r.status, r.id_pasien, r.id_pelayanan, r.id_dokter, r.id_perawat, r.id_apoteker, r.hasil_lab)";
-    $data_sinkron = oci_parse($conn_lokal, $query);
-    $result = oci_execute($data_sinkron);
-    oci_commit($conn_lokal);
-
-    if ($result) {
-      $status = "Good Job! Data rekam medis berhasil disinkronisasi.";
-    } else {
-      $status = "Bad News! Data rekam medis gagal disinkronisasi.";
-    }
-    oci_close($conn_lokal);
-  }
-  // resepsionis to apoteker
-  if (isset($_POST['submit_dokter'])) {
-    $query = "MERGE INTO rekam_medis a USING (SELECT * FROM rekam_medis@to_dokter) d ON (a.id_daftar = d.id_daftar)
-              WHEN MATCHED THEN UPDATE SET a.tgl_daftar = d.tgl_daftar, a.anamnesa = d.anamnesa, a.pemeriksaan = d.pemeriksaan, a.diagnosis = d.diagnosis, a.terapi = d.terapi, a.status = d.status, a.id_pasien = d.id_pasien, a.id_pelayanan = d.id_pelayanan, a.id_dokter = d.id_dokter, a.id_perawat = d.id_perawat, a.id_apoteker = d.id_apoteker, a.hasil_lab = d.hasil_lab
-              WHEN NOT MATCHED THEN INSERT (id_daftar, tgl_daftar, anamnesa, pemeriksaan, diagnosis, terapi, status, id_pasien, id_pelayanan, id_dokter, id_perawat, id_apoteker, hasil_lab) VALUES (d.id_daftar, d.tgl_daftar, d.anamnesa, d.pemeriksaan, d.diagnosis, d.terapi, d.status, d.id_pasien, d.id_pelayanan, d.id_dokter, d.id_perawat, d.id_apoteker, d.hasil_lab)";
-    $data_sinkron = oci_parse($conn_lokal, $query);
-    $result = oci_execute($data_sinkron);
-    oci_commit($conn_lokal);
-
-    if ($result) {
-      $status = "Good Job! Data rekam medis berhasil disinkronisasi.";
-    } else {
-      $status = "Bad News! Data rekam medis gagal disinkronisasi.";
-    }
-    oci_close($conn_lokal);
   }
 ?>
 <!DOCTYPE html>
@@ -118,7 +84,7 @@
           include 'nav-side.php';
         ?>
         <div class="col-md-10 content">
-          <h3>SINKRONISASI DATA REKAM MEDIS</h3>
+          <h3>SINKRONISASI DATA PEMBELIAN OBAT APOTEK</h3>
           <hr>
           <div class="row">
             <!-- resepsionis sinkronisasi dengan pusat -->
@@ -132,7 +98,7 @@
                   }
                 ?>
                 <hr>
-                <form action="sinkron_rekam.php" method="post">
+                <form action="sinkron_beli_obat.php" method="post">
                   <input type="submit" class="btn btn-success btn-sinkron" name="submit_pusat" value="SINKRONISASI">
                 </form>
                 <!-- <button type="button" id="pustorep" class="btn btn-primary btn-sinkron" name="button">SINKRONISASI PUSAT KE RESEPSIONIS</button> -->
@@ -149,44 +115,8 @@
                   }
                 ?>
                 <hr>
-                <form action="sinkron_rekam.php" method="post">
+                <form action="sinkron_beli_obat.php" method="post">
                   <input type="submit" class="btn btn-success btn-sinkron" name="submit_apoteker" value="SINKRONISASI">
-                </form>
-                <!-- <button type="button" id="pustorep" class="btn btn-primary btn-sinkron" name="button">SINKRONISASI PUSAT KE RESEPSIONIS</button> -->
-              </fieldset>
-            </div>
-          </div>
-          <div class="row">
-            <!-- resepsionis sinkronisasi dengan pusat -->
-            <div class="col-md-6">
-              <fieldset class="sinkron">
-                <legend class="sinkron">Sinkronisasi Data Server Apoteker - Server Resepsionis</legend>
-                <h3>Tekan tombol 'Sinkronisasi' untuk sinkronisasi data</h3>
-                <?php
-                  if (isset($_POST['submit_resepsionis'])) {
-                    ?><div class="alert alert-info" role="alert"><?php echo $status; ?></div><?php
-                  }
-                ?>
-                <hr>
-                <form action="sinkron_rekam.php" method="post">
-                  <input type="submit" class="btn btn-success btn-sinkron" name="submit_resepsionis" value="SINKRONISASI">
-                </form>
-                <!-- <button type="button" id="pustorep" class="btn btn-primary btn-sinkron" name="button">SINKRONISASI PUSAT KE RESEPSIONIS</button> -->
-              </fieldset>
-            </div>
-            <!-- pusat sinkronisasi dengan resepsionis -->
-            <div class="col-md-6">
-              <fieldset class="sinkron">
-                <legend class="sinkron">Sinkronisasi Data Server Apoteker - Server Dokter</legend>
-                <h3>Tekan tombol 'Sinkronisasi' untuk sinkronisasi data</h3>
-                <?php
-                  if (isset($_POST['submit_dokter'])) {
-                    ?><div class="alert alert-info" role="alert"><?php echo $status; ?></div><?php
-                  }
-                ?>
-                <hr>
-                <form action="sinkron_rekam.php" method="post">
-                  <input type="submit" class="btn btn-success btn-sinkron" name="submit_dokter" value="SINKRONISASI">
                 </form>
                 <!-- <button type="button" id="pustorep" class="btn btn-primary btn-sinkron" name="button">SINKRONISASI PUSAT KE RESEPSIONIS</button> -->
               </fieldset>

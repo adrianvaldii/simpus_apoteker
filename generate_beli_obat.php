@@ -25,15 +25,13 @@
       }
   } elseif ($status_lokal == "ON" && $status_pusat == "OFF") {
       if ($cari_lokal) {
-        $nilai_max = max($cari_lokal[0]);
-        $id_beli = $nilai_max + 1;
+        $id_beli = $cari_lokal[0] + 1;
       } else {
         $id_beli = "601001";
       }
   } elseif ($status_lokal == "OFF" && $status_pusat == "ON") {
       if ($cari_pusat) {
-        $nilai_max = max($cari_pusat[0]);
-        $id_beli = $nilai_max + 1;
+        $id_beli = $cari_pusat[0] + 1;
       } else {
         $id_beli = "601001";
       }
