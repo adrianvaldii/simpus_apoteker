@@ -1,9 +1,9 @@
 <?php session_start();
   // error_reporting(0);
-  include_once 'koneksi/koneksi_lokal.php';
-  include_once 'koneksi/koneksi_pusat.php';
-  include_once 'koneksi/koneksi_resepsionis.php';
-  include_once 'koneksi/koneksi_dokter.php';
+  include_once 'koneksi/mysql_lokal.php';
+  include_once 'koneksi/mysql_pusat.php';
+  include_once 'koneksi/mysql_resepsionis.php';
+  include_once 'koneksi/mysql_dokter.php';
 
   // session login
   if(empty($_SESSION['user'])){
@@ -13,69 +13,70 @@
   }
 
   $status = "";
+  // query merge data
+  $query_pusat = "INSERT INTO rekam_medis SELECT * FROM skripsi_apoteker.rekam_medis a ON DUPLICATE KEY UPDATE
+                  id_daftar = a.id_daftar, tgl_daftar = a.tgl_daftar, anamnesa = a.anamnesa, pemeriksaan = a.pemeriksaan,
+                  diagnosis = a.diagnosis, terapi = a.terapi, status = a.status, id_pelayanan = a.id_pelayanan,
+                  id_perawat = a.id_perawat, id_pasien = a.id_pasien, id_dokter = a.id_dokter, id_apoteker = a.id_apoteker, hasil_lab = a.hasil_lab";
+
+  $query_apoteker = "INSERT INTO rekam_medis SELECT * FROM skripsi_pusat.rekam_medis p ON DUPLICATE KEY UPDATE
+                  id_daftar = p.id_daftar, tgl_daftar = p.tgl_daftar, anamnesa = p.anamnesa, pemeriksaan = p.pemeriksaan,
+                  diagnosis = p.diagnosis, terapi = p.terapi, status = p.status, id_pelayanan = p.id_pelayanan,
+                  id_perawat = p.id_perawat, id_pasien = p.id_pasien, id_dokter = p.id_dokter, id_apoteker = p.id_apoteker, hasil_lab = p.hasil_lab";
+
+  $query_resepsionis = "INSERT INTO rekam_medis SELECT * FROM skripsi_resepsionis.rekam_medis r ON DUPLICATE KEY UPDATE
+                  id_daftar = r.id_daftar, tgl_daftar = r.tgl_daftar, anamnesa = r.anamnesa, pemeriksaan = r.pemeriksaan,
+                  diagnosis = r.diagnosis, terapi = r.terapi, status = r.status, id_pelayanan = r.id_pelayanan,
+                  id_perawat = r.id_perawat, id_pasien = r.id_pasien, id_dokter = r.id_dokter, id_apoteker = r.id_apoteker, hasil_lab = r.hasil_lab";
+
+  $query_dokter = "INSERT INTO rekam_medis SELECT * FROM skripsi_dokter.rekam_medis d ON DUPLICATE KEY UPDATE
+                  id_daftar = d.id_daftar, tgl_daftar = d.tgl_daftar, anamnesa = d.anamnesa, pemeriksaan = d.pemeriksaan,
+                  diagnosis = d.diagnosis, terapi = d.terapi, status = d.status, id_pelayanan = d.id_pelayanan,
+                  id_perawat = d.id_perawat, id_pasien = d.id_pasien, id_dokter = d.id_dokter, id_apoteker = d.id_apoteker, hasil_lab = d.hasil_lab";
+
   // dokter to pusat
   if (isset($_POST['submit_pusat'])) {
-    $query = "MERGE INTO rekam_medis a USING (SELECT * FROM rekam_medis@to_pusat) p ON (a.id_daftar = p.id_daftar)
-              WHEN MATCHED THEN UPDATE SET a.tgl_daftar = p.tgl_daftar, a.anamnesa = p.anamnesa, a.pemeriksaan = p.pemeriksaan, a.diagnosis = p.diagnosis, a.terapi = p.terapi, a.status = p.status, a.id_pasien = p.id_pasien, a.id_pelayanan = p.id_pelayanan, a.id_dokter = p.id_dokter, a.id_perawat = p.id_perawat, a.id_apoteker = p.id_apoteker, a.hasil_lab = p.hasil_lab
-              WHEN NOT MATCHED THEN INSERT (id_daftar, tgl_daftar, anamnesa, pemeriksaan, diagnosis, terapi, status, id_pasien, id_pelayanan, id_dokter, id_perawat, id_apoteker, hasil_lab) VALUES (p.id_daftar, p.tgl_daftar, p.anamnesa, p.pemeriksaan, p.diagnosis, p.terapi, p.status, p.id_pasien, p.id_pelayanan, p.id_dokter, p.id_perawat, p.id_apoteker, p.hasil_lab)";
-    $data_sinkron = oci_parse($conn_lokal, $query);
-    $result = oci_execute($data_sinkron);
-    oci_commit($conn_lokal);
+    $result = $mysqli_pusat->query($query_pusat);
 
     if ($result) {
       $status = "Good Job! Data rekam medis berhasil disinkronisasi.";
     } else {
       $status = "Bad News! Data rekam medis gagal disinkronisasi.";
     }
-    oci_close($conn_lokal);
+
   }
   // pusat to dokter
   if (isset($_POST['submit_apoteker'])) {
-    $query = "MERGE INTO rekam_medis p USING (SELECT * FROM rekam_medis@to_apoteker) a ON (p.id_daftar = a.id_daftar)
-              WHEN MATCHED THEN UPDATE SET p.tgl_daftar = a.tgl_daftar, p.anamnesa = a.anamnesa, p.pemeriksaan = a.pemeriksaan, p.diagnosis = a.diagnosis, p.terapi = a.terapi, p.status = a.status, p.id_pasien = a.id_pasien, p.id_pelayanan = a.id_pelayanan, p.id_dokter = a.id_dokter, p.id_perawat = a.id_perawat, p.id_apoteker = a.id_apoteker, p.hasil_lab = a.hasil_lab
-              WHEN NOT MATCHED THEN INSERT (id_daftar, tgl_daftar, anamnesa, pemeriksaan, diagnosis, terapi, status, id_pasien, id_pelayanan, id_dokter, id_perawat, id_apoteker, hasil_lab) VALUES (a.id_daftar, a.tgl_daftar, a.anamnesa, a.pemeriksaan, a.diagnosis, a.terapi, a.status, a.id_pasien, a.id_pelayanan, a.id_dokter, a.id_perawat, a.id_apoteker, a.hasil_lab)";
-    $data_sinkron = oci_parse($conn_pusat, $query);
-    $result = oci_execute($data_sinkron);
-    oci_commit($conn_pusat);
+    $result = $mysqli_lokal->query($query_apoteker);
 
     if ($result) {
       $status = "Good Job! Data rekam medis berhasil disinkronisasi.";
     } else {
       $status = "Bad News! Data rekam medis gagal disinkronisasi.";
     }
-    oci_close($conn_pusat);
+
   }
   // dokter to resepsionis
   if (isset($_POST['submit_resepsionis'])) {
-    $query = "MERGE INTO rekam_medis a USING (SELECT * FROM rekam_medis@to_resepsionis) r ON (a.id_daftar = r.id_daftar)
-              WHEN MATCHED THEN UPDATE SET a.tgl_daftar = r.tgl_daftar, a.anamnesa = r.anamnesa, a.pemeriksaan = r.pemeriksaan, a.diagnosis = r.diagnosis, a.terapi = r.terapi, a.status = r.status, a.id_pasien = r.id_pasien, a.id_pelayanan = r.id_pelayanan, a.id_dokter = r.id_dokter, a.id_perawat = r.id_perawat, a.id_apoteker = r.id_apoteker, a.hasil_lab = r.hasil_lab
-              WHEN NOT MATCHED THEN INSERT (id_daftar, tgl_daftar, anamnesa, pemeriksaan, diagnosis, terapi, status, id_pasien, id_pelayanan, id_dokter, id_perawat, id_apoteker, hasil_lab) VALUES (r.id_daftar, r.tgl_daftar, r.anamnesa, r.pemeriksaan, r.diagnosis, r.terapi, r.status, r.id_pasien, r.id_pelayanan, r.id_dokter, r.id_perawat, r.id_apoteker, r.hasil_lab)";
-    $data_sinkron = oci_parse($conn_lokal, $query);
-    $result = oci_execute($data_sinkron);
-    oci_commit($conn_lokal);
+    $result = $mysqli_lokal->query($query_resepsionis);
 
     if ($result) {
       $status = "Good Job! Data rekam medis berhasil disinkronisasi.";
     } else {
       $status = "Bad News! Data rekam medis gagal disinkronisasi.";
     }
-    oci_close($conn_lokal);
+
   }
   // resepsionis to apoteker
   if (isset($_POST['submit_dokter'])) {
-    $query = "MERGE INTO rekam_medis a USING (SELECT * FROM rekam_medis@to_dokter) d ON (a.id_daftar = d.id_daftar)
-              WHEN MATCHED THEN UPDATE SET a.tgl_daftar = d.tgl_daftar, a.anamnesa = d.anamnesa, a.pemeriksaan = d.pemeriksaan, a.diagnosis = d.diagnosis, a.terapi = d.terapi, a.status = d.status, a.id_pasien = d.id_pasien, a.id_pelayanan = d.id_pelayanan, a.id_dokter = d.id_dokter, a.id_perawat = d.id_perawat, a.id_apoteker = d.id_apoteker, a.hasil_lab = d.hasil_lab
-              WHEN NOT MATCHED THEN INSERT (id_daftar, tgl_daftar, anamnesa, pemeriksaan, diagnosis, terapi, status, id_pasien, id_pelayanan, id_dokter, id_perawat, id_apoteker, hasil_lab) VALUES (d.id_daftar, d.tgl_daftar, d.anamnesa, d.pemeriksaan, d.diagnosis, d.terapi, d.status, d.id_pasien, d.id_pelayanan, d.id_dokter, d.id_perawat, d.id_apoteker, d.hasil_lab)";
-    $data_sinkron = oci_parse($conn_lokal, $query);
-    $result = oci_execute($data_sinkron);
-    oci_commit($conn_lokal);
+    $result = $mysqli_lokal->query($query_dokter);
 
     if ($result) {
       $status = "Good Job! Data rekam medis berhasil disinkronisasi.";
     } else {
       $status = "Bad News! Data rekam medis gagal disinkronisasi.";
     }
-    oci_close($conn_lokal);
+
   }
 ?>
 <!DOCTYPE html>
@@ -124,7 +125,7 @@
             <!-- resepsionis sinkronisasi dengan pusat -->
             <div class="col-md-6">
               <fieldset class="sinkron">
-                <legend class="sinkron">Sinkronisasi Data Server Apoteker - Server Pusat</legend>
+                <legend class="sinkron">Sinkronisasi Data Server Pusat - Server Apoteker</legend>
                 <h3>Tekan tombol 'Sinkronisasi' untuk sinkronisasi data</h3>
                 <?php
                   if (isset($_POST['submit_pusat'])) {
@@ -141,7 +142,7 @@
             <!-- pusat sinkronisasi dengan resepsionis -->
             <div class="col-md-6">
               <fieldset class="sinkron">
-                <legend class="sinkron">Sinkronisasi Data Server Pusat - Server Apoteker</legend>
+                <legend class="sinkron">Sinkronisasi Data Server Apoteker - Server Pusat</legend>
                 <h3>Tekan tombol 'Sinkronisasi' untuk sinkronisasi data</h3>
                 <?php
                   if (isset($_POST['submit_apoteker'])) {
