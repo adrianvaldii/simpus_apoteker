@@ -5,11 +5,11 @@
   $password = "resepsionis";
   $db = "skripsi_resepsionis";
 
-  $mysqli_lokal = new mysqli($host, $username, $password, $db);
+  $mysqli_resepsionis = new mysqli($host, $username, $password, $db);
 
-  if ($mysqli_lokal->connect_errno) {
-    $stat_mylokal = "OFF";
+  if ($mysqli_resepsionis->connect_errno) {
+    $stat_myresepsionis = "OFF";
   } else {
-    $stat_mylokal = "ON";
+    $stat_myresepsionis = "ON";
   }
 ?>

@@ -5,11 +5,11 @@
   $password = "apoteker";
   $db = "skripsi_apoteker";
 
-  $mysqli_apoteker = new mysqli($host, $username, $password, $db);
+  $mysqli_lokal = new mysqli($host, $username, $password, $db);
 
-  if ($mysqli_apoteker->connect_errno) {
-    $stat_myapoteker = "OFF";
+  if ($mysqli_lokal->connect_errno) {
+    $stat_mylokal = "OFF";
   } else {
-    $stat_myapoteker = "ON";
+    $stat_mylokal = "ON";
   }
 ?>

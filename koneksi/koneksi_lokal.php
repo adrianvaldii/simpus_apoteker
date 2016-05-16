@@ -4,12 +4,12 @@
   $password = "apoteker";
   $database = "localhost/xe";
 
-  $conn_apoteker = oci_connect($username, $password, $database);
+  $conn_lokal = oci_connect($username, $password, $database);
 
-  if($conn_apoteker){
-    $status_apoteker = "ON";
+  if($conn_lokal){
+    $status_lokal = "ON";
   }else{
-    $status_apoteker = "OFF";
+    $status_lokal = "OFF";
   }
 
 ?>

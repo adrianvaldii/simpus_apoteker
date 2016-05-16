@@ -1,10 +1,15 @@
 <?php session_start();
   // error_reporting(0);
-
+  // oracle
   include_once 'koneksi/koneksi_pusat.php';
   include_once 'koneksi/koneksi_lokal.php';
   include_once 'koneksi/koneksi_dokter.php';
   include_once 'koneksi/koneksi_resepsionis.php';
+  // mysql
+  include_once 'koneksi/mysql_lokal.php';
+  include_once 'koneksi/mysql_pusat.php';
+  include_once 'koneksi/mysql_resepsionis.php';
+  include_once 'koneksi/mysql_dokter.php';
 
   if(empty($_SESSION['user'])){
     header("Location: index.php?message=please+login");
@@ -105,6 +110,46 @@
                     ?><span class="status-server label label-success"><?php echo $status_dokter; ?></span><?php
                   }else {
                     ?><span class="status-server label label-danger"><?php echo $status_dokter; ?></span><?php
+                  }
+                ?>
+                <div class="clear"></div>
+              </div>
+              <div class="kotak">
+                <h4>STATUS SERVER MySQL</h4>
+                <hr>
+                <p class="nama-server">Server Lokal</p>
+                <?php
+                  if ($stat_mylokal == "ON") {
+                    ?><span class="status-server label label-success"><?php echo $stat_mylokal; ?></span><?php
+                  }else {
+                    ?><span class="status-server label label-danger"><?php echo $stat_mylokal; ?></span><?php
+                  }
+                ?>
+                <div class="clear"></div>
+                <p class="nama-server">Server Pusat</p>
+                <?php
+                  if ($stat_mypusat == "ON") {
+                    ?><span class="status-server label label-success"><?php echo $stat_mypusat; ?></span><?php
+                  }else {
+                    ?><span class="status-server label label-danger"><?php echo $stat_mypusat; ?></span><?php
+                  }
+                ?>
+                <div class="clear"></div>
+                <p class="nama-server">Server Resepsionis</p>
+                <?php
+                  if ($stat_myresepsionis == "ON") {
+                    ?><span class="status-server label label-success"><?php echo $stat_myresepsionis; ?></span><?php
+                  }else {
+                    ?><span class="status-server label label-danger"><?php echo $stat_myresepsionis; ?></span><?php
+                  }
+                ?>
+                <div class="clear"></div>
+                <p class="nama-server">Server Dokter</p>
+                <?php
+                  if ($stat_mydokter == "ON") {
+                    ?><span class="status-server label label-success"><?php echo $stat_mydokter; ?></span><?php
+                  }else {
+                    ?><span class="status-server label label-danger"><?php echo $stat_mydokter; ?></span><?php
                   }
                 ?>
                 <div class="clear"></div>
