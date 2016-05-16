@@ -1,7 +1,7 @@
 <?php session_start();
   // error_reporting(0);
-  include_once 'koneksi/koneksi_lokal.php';
-  include_once 'koneksi/koneksi_pusat.php';
+  include_once 'koneksi/mysql_lokal.php';
+  include_once 'koneksi/mysql_pusat.php';
 
   // session login
   if(empty($_SESSION['user'])){
@@ -11,37 +11,36 @@
   }
 
   $status = "";
+
+  // query
+  $query_lokal = "INSERT INTO beli_obat SELECT * FROM skripsi_pusat.beli_obat p ON DUPLICATE KEY UPDATE
+                  id_beli = p.id_beli, jumlah = p.jumlah, id_obat = p.id_obat, nama_pembeli = p.nama_pembeli,
+                  tgl_beli = p.tgl_beli, telp = p.telp";
+  $query_pusat = "INSERT INTO beli_obat SELECT * FROM skripsi_apoteker.beli_obat a ON DUPLICATE KEY UPDATE
+                  id_beli = a.id_beli, jumlah = a.jumlah, id_obat = a.id_obat, nama_pembeli = a.nama_pembeli,
+                  tgl_beli = a.tgl_beli, telp = a.telp";
+
   // dokter to pusat
   if (isset($_POST['submit_pusat'])) {
-    $query = "MERGE INTO beli_obat a USING (SELECT * FROM beli_obat@to_pusat) p ON (a.id_beli = p.id_beli)
-              WHEN MATCHED THEN UPDATE SET a.tgl_beli = p.tgl_beli, a.id_obat = p.id_obat, a.jumlah = p.jumlah, a.nama_pembeli = p.nama_pembeli, a.telp = p.telp
-              WHEN NOT MATCHED THEN INSERT (id_beli, tgl_beli, id_obat, jumlah, nama_pembeli, telp) VALUES (p.id_beli, p.tgl_beli, p.id_obat, p.jumlah, p.nama_pembeli, p.telp)";
-    $data_sinkron = oci_parse($conn_lokal, $query);
-    $result = oci_execute($data_sinkron);
-    oci_commit($conn_lokal);
+    $result = $mysqli_lokal->query($query_lokal);
 
     if ($result) {
       $status = "Good Job! Data pembelian obat berhasil disinkronisasi.";
     } else {
       $status = "Bad News! Data pembelian obat gagal disinkronisasi.";
     }
-    oci_close($conn_lokal);
+
   }
   // pusat to dokter
   if (isset($_POST['submit_apoteker'])) {
-    $query = "MERGE INTO beli_obat p USING (SELECT * FROM beli_obat@to_apoteker) a ON (p.id_beli = a.id_beli)
-              WHEN MATCHED THEN UPDATE SET p.tgl_beli = a.tgl_beli, p.id_obat = a.id_obat, p.jumlah = a.jumlah, p.nama_pembeli = a.nama_pembeli, p.telp = a.telp
-              WHEN NOT MATCHED THEN INSERT (id_beli, tgl_beli, id_obat, jumlah, nama_pembeli, telp) VALUES (a.id_beli, a.tgl_beli, a.id_obat, a.jumlah, a.nama_pembeli, a.telp)";
-    $data_sinkron = oci_parse($conn_pusat, $query);
-    $result = oci_execute($data_sinkron);
-    oci_commit($conn_pusat);
+    $result = $mysqli_pusat->query($query_pusat);
 
     if ($result) {
       $status = "Good Job! Data pembelian obat berhasil disinkronisasi.";
     } else {
       $status = "Bad News! Data pembelian obat gagal disinkronisasi.";
     }
-    oci_close($conn_pusat);
+    
   }
 ?>
 <!DOCTYPE html>
