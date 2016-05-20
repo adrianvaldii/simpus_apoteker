@@ -13,12 +13,16 @@
   $status = "";
 
   // query
-  $query_lokal = "INSERT INTO beli_obat SELECT * FROM skripsi_pusat.beli_obat p ON DUPLICATE KEY UPDATE
-                  id_beli = p.id_beli, jumlah = p.jumlah, id_obat = p.id_obat, nama_pembeli = p.nama_pembeli,
-                  tgl_beli = p.tgl_beli, telp = p.telp";
-  $query_pusat = "INSERT INTO beli_obat SELECT * FROM skripsi_apoteker.beli_obat a ON DUPLICATE KEY UPDATE
-                  id_beli = a.id_beli, jumlah = a.jumlah, id_obat = a.id_obat, nama_pembeli = a.nama_pembeli,
-                  tgl_beli = a.tgl_beli, telp = a.telp";
+  $query_lokal = "INSERT INTO beli_obat (id_beli,jumlah,id_obat,nama_pembeli,tgl_beli,telp)
+                  SELECT id_beli,jumlah,id_obat,nama_pembeli,tgl_beli,telp FROM skripsi_pusat.beli_obat
+                  ON DUPLICATE KEY UPDATE
+                  id_beli = values(id_beli),jumlah = values(jumlah),id_obat = values(id_obat),
+                  nama_pembeli = values(nama_pembeli),tgl_beli = values(tgl_beli),telp = values(telp)";
+  $query_pusat = "INSERT INTO beli_obat (id_beli,jumlah,id_obat,nama_pembeli,tgl_beli,telp)
+                  SELECT id_beli,jumlah,id_obat,nama_pembeli,tgl_beli,telp FROM skripsi_apoteker.beli_obat
+                  ON DUPLICATE KEY UPDATE
+                  id_beli = values(id_beli),jumlah = values(jumlah),id_obat = values(id_obat),
+                  nama_pembeli = values(nama_pembeli),tgl_beli = values(tgl_beli),telp = values(telp)";
 
   // dokter to pusat
   if (isset($_POST['submit_pusat'])) {
@@ -40,7 +44,7 @@
     } else {
       $status = "Bad News! Data pembelian obat gagal disinkronisasi.";
     }
-    
+
   }
 ?>
 <!DOCTYPE html>
@@ -65,7 +69,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.php">UIN SUKA HEALTH CENTER - RESEPSIONIS</a>
+          <a class="navbar-brand" href="index.php">UIN SUKA HEALTH CENTER - APOTEKER</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->

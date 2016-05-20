@@ -13,12 +13,14 @@
   $status = "";
 
   // query
-  $query_lokal = "INSERT INTO obat_keluar SELECT * FROM skripsi_pusat.obat_keluar p ON DUPLICATE KEY UPDATE
-                  id_obat_keluar = p.id_obat_keluar, jumlah = p.jumlah, id_obat = p.id_obat, id_daftar = p.id_daftar,
-                  tgl_keluar = p.tgl_keluar";
-  $query_pusat = "INSERT INTO obat_keluar SELECT * FROM skripsi_apoteker.obat_keluar a ON DUPLICATE KEY UPDATE
-                  id_obat_keluar = a.id_obat_keluar, jumlah = a.jumlah, id_obat = a.id_obat, id_daftar = a.id_daftar,
-                  tgl_keluar = a.tgl_keluar";
+  $query_lokal = "INSERT INTO obat_keluar (id_obat_keluar,jumlah,id_obat,id_daftar,tgl_keluar) SELECT id_obat_keluar,jumlah,id_obat,id_daftar,tgl_keluar FROM skripsi_pusat.obat_keluar
+                  ON DUPLICATE KEY UPDATE
+                  id_obat_keluar = values(id_obat_keluar),jumlah = values(jumlah),id_obat = values(id_obat),
+                  id_daftar = values(id_daftar),tgl_keluar = values(tgl_keluar)";
+  $query_pusat = "INSERT INTO obat_keluar (id_obat_keluar,jumlah,id_obat,id_daftar,tgl_keluar) SELECT id_obat_keluar,jumlah,id_obat,id_daftar,tgl_keluar FROM skripsi_apoteker.obat_keluar
+                  ON DUPLICATE KEY UPDATE
+                  id_obat_keluar = values(id_obat_keluar),jumlah = values(jumlah),id_obat = values(id_obat),
+                  id_daftar = values(id_daftar),tgl_keluar = values(tgl_keluar)";
 
   // dokter to pusat
   if (isset($_POST['submit_pusat'])) {
@@ -40,7 +42,7 @@
     } else {
       $status = "Bad News! Data obat keluar gagal disinkronisasi.";
     }
-    
+
   }
 ?>
 <!DOCTYPE html>
@@ -65,7 +67,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.php">UIN SUKA HEALTH CENTER - RESEPSIONIS</a>
+          <a class="navbar-brand" href="index.php">UIN SUKA HEALTH CENTER - APOTEKER</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->

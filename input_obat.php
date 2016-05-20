@@ -34,7 +34,7 @@
     $jumlah = $_POST['jumlah'];
 
     // update data rekam_medis dengan apoteker
-    $query = "UPDATE rekam_medis SET id_pasien = '$id_pasien', id_apoteker = '$id_apoteker' WHERE id_daftar = '$id_daftar'";
+    $query = "UPDATE rekam_medis SET id_apoteker = '$id_apoteker' WHERE id_daftar = '$id_daftar'";
 
     // logika basis data terdistribusi
     if ($stat_mylokal == "ON" && $stat_mypusat == "ON" && $stat_myresepsionis == "ON" && $stat_mydokter == "ON") {
