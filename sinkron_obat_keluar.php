@@ -13,20 +13,28 @@
   $status = "";
 
   // query
-  $query_lokal = "INSERT INTO obat_keluar (id_obat_keluar,jumlah,id_obat,id_daftar,tgl_keluar) SELECT id_obat_keluar,jumlah,id_obat,id_daftar,tgl_keluar FROM skripsi_pusat.obat_keluar
-                  ON DUPLICATE KEY UPDATE
-                  id_obat_keluar = values(id_obat_keluar),jumlah = values(jumlah),id_obat = values(id_obat),
-                  id_daftar = values(id_daftar),tgl_keluar = values(tgl_keluar)";
-  $query_pusat = "INSERT INTO obat_keluar (id_obat_keluar,jumlah,id_obat,id_daftar,tgl_keluar) SELECT id_obat_keluar,jumlah,id_obat,id_daftar,tgl_keluar FROM skripsi_apoteker.obat_keluar
-                  ON DUPLICATE KEY UPDATE
-                  id_obat_keluar = values(id_obat_keluar),jumlah = values(jumlah),id_obat = values(id_obat),
-                  id_daftar = values(id_daftar),tgl_keluar = values(tgl_keluar)";
+  // $query_lokal = "INSERT INTO obat_keluar (id_obat_keluar,jumlah,id_obat,id_daftar,tgl_keluar) SELECT id_obat_keluar,jumlah,id_obat,id_daftar,tgl_keluar FROM skripsi_pusat.obat_keluar
+  //                 ON DUPLICATE KEY UPDATE
+  //                 id_obat_keluar = values(id_obat_keluar),jumlah = values(jumlah),id_obat = values(id_obat),
+  //                 id_daftar = values(id_daftar),tgl_keluar = values(tgl_keluar)";
+  // $query_pusat = "INSERT INTO obat_keluar (id_obat_keluar,jumlah,id_obat,id_daftar,tgl_keluar) SELECT id_obat_keluar,jumlah,id_obat,id_daftar,tgl_keluar FROM skripsi_apoteker.obat_keluar
+  //                 ON DUPLICATE KEY UPDATE
+  //                 id_obat_keluar = values(id_obat_keluar),jumlah = values(jumlah),id_obat = values(id_obat),
+  //                 id_daftar = values(id_daftar),tgl_keluar = values(tgl_keluar)";
 
   // dokter to pusat
   if (isset($_POST['submit_pusat'])) {
-    $result = $mysqli_lokal->query($query_lokal);
+    $query = "select * from obat_keluar";
+    $stmt = $mysqli_pusat->query($query);
 
-    if ($result) {
+    while ($row = $stmt->fetch_array(MYSQL_ASSOC)) {
+      $mysqli_lokal->query("INSERT INTO obat_keluar (id_obat_keluar, jumlah, id_obat, id_daftar, tgl_keluar)
+      VALUES ('$row[id_obat_keluar]','$row[jumlah]','$row[id_obat]','$row[id_daftar]','$row[tgl_keluar]') ON DUPLICATE KEY UPDATE
+      id_obat_keluar = '$row[id_obat_keluar]',jumlah = '$row[jumlah]',id_obat = '$row[id_obat]',
+      id_daftar = '$row[id_daftar]',tgl_keluar = '$row[tgl_keluar]'");
+    }
+
+    if ($stmt) {
       $status = "Good Job! Data obat keluar berhasil disinkronisasi.";
     } else {
       $status = "Bad News! Data obat keluar gagal disinkronisasi.";
@@ -35,9 +43,17 @@
   }
   // pusat to dokter
   if (isset($_POST['submit_apoteker'])) {
-    $result = $mysqli_pusat->query($query_pusat);
+    $query = "select * from obat_keluar";
+    $stmt = $mysqli_lokal->query($query);
 
-    if ($result) {
+    while ($row = $stmt->fetch_array(MYSQL_ASSOC)) {
+      $mysqli_pusat->query("INSERT INTO obat_keluar (id_obat_keluar, jumlah, id_obat, id_daftar, tgl_keluar)
+      VALUES ('$row[id_obat_keluar]','$row[jumlah]','$row[id_obat]','$row[id_daftar]','$row[tgl_keluar]') ON DUPLICATE KEY UPDATE
+      id_obat_keluar = '$row[id_obat_keluar]',jumlah = '$row[jumlah]',id_obat = '$row[id_obat]',
+      id_daftar = '$row[id_daftar]',tgl_keluar = '$row[tgl_keluar]'");
+    }
+
+    if ($stmt) {
       $status = "Good Job! Data obat keluar berhasil disinkronisasi.";
     } else {
       $status = "Bad News! Data obat keluar gagal disinkronisasi.";
